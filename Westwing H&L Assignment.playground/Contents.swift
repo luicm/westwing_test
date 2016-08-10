@@ -5,10 +5,10 @@ import PlaygroundSupport
 
 enum ProductResult {
     case success([Product])
-    case failure(ErrorProtocol)
+    case failure(Error)
 }
 
-enum APIError: ErrorProtocol {
+enum APIError: Error {
     case emptyJSONData
     case invalidJSONData
 }
@@ -143,7 +143,7 @@ class ProductListViewController: UICollectionViewController, UICollectionViewDel
     override func viewDidLoad() {
         super.viewDidLoad()
         self.collectionView?.register(ProductCell.self, forCellWithReuseIdentifier: productCellIdentifier);
-        self.collectionView?.backgroundColor = UIColor.white()
+        self.collectionView?.backgroundColor = UIColor.white
         self.collectionView?.addSubview(activityIndicator)
         self.title = "Nice List"
         activityIndicator.hidesWhenStopped = true
@@ -285,7 +285,7 @@ class ProductDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.white()
+        self.view.backgroundColor = UIColor.white
         let detailView = ProductDetailView()
         detailView.detailProduct = product
         self.view = detailView
@@ -304,7 +304,7 @@ class ProductDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor.white()
+        self.backgroundColor = UIColor.white
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -344,7 +344,7 @@ class ProductDetailView: UIView {
         title.text = product.title
         title.font = UIFont.boldSystemFont(ofSize: 19)
         title.numberOfLines = 0
-        title.backgroundColor = .white()
+        title.backgroundColor = UIColor.white
         subtitle.text = product.subtitle
         subtitle.font = UIFont.italicSystemFont(ofSize: 14)
         subtitle.numberOfLines = 0
@@ -421,8 +421,8 @@ class ProductDetailView: UIView {
 //********************************
 
 class WestwingImageCache {
-    static let sharedCache: Cache<AnyObject, AnyObject> = {
-        let cache = Cache<AnyObject, AnyObject>()
+    static let sharedCache: NSCache<AnyObject, AnyObject> = {
+        let cache = NSCache<AnyObject, AnyObject>()
         cache.name = "MyImageCache"
         cache.countLimit = 20 // Max 20 images in memory.
         cache.totalCostLimit = 10*1024*1024 // Max 10MB used.
@@ -430,12 +430,13 @@ class WestwingImageCache {
     }()
 }
 
+
 extension URL {
     typealias ImageCacheCompletion = (UIImage) -> Void
     
     var cachedImage: UIImage? {
         return WestwingImageCache.sharedCache.object(
-            forKey: absoluteString!) as? UIImage
+            forKey: absoluteString) as? UIImage
     }
     
     func fetchImage(completion: ImageCacheCompletion) {
@@ -446,7 +447,7 @@ extension URL {
                     image = UIImage(data: data) {
                     WestwingImageCache.sharedCache.setObject(
                         image, 
-                        forKey: self.absoluteString!, 
+                        forKey: self.absoluteString, 
                         cost: data.count)
                     DispatchQueue.main.async() {
                         completion(image)
